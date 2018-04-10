@@ -1,7 +1,7 @@
 #jinja2: trim_blocks: "true", lstrip_blocks: "true"
 # {{ ansible_managed }}
 {% macro ceph_ipaddr(ipa, suffix="", f=None) -%}
-      {%- if ipa == '' -%}
+      {%- if ipa == '' or f == '' -%}
       {%- else -%}
       {%- if f != None -%}
       {%- set ipa=ipa | ipaddr(f) | first -%}
@@ -64,7 +64,7 @@ mon host = {% if nb_mon > 0 -%}
       {{ ceph_ipaddr(hostvars[host]['monitor_address']) }}
     {%- elif hostvars[host]['monitor_interface'] is defined -%}
       {%- set interface = 'ansible_' + (hostvars[host]['monitor_interface'] | replace('-', '_')) -%}
-      [{{ ceph_ipaddr2(hostvars[host][interface][ip_version]) }}]
+      {{ ceph_ipaddr2(hostvars[host][interface][ip_version]) }}
     {%- else -%}
       {% set interface = 'ansible_' + (monitor_interface | replace('-', '_')) %}
       [{{ ceph_ipaddr2(hostvars[host][interface][ip_version]) }}]
